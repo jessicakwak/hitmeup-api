@@ -15,5 +15,13 @@ module.exports = mongoose.model("users", {
     type: String,
     required: true,
     select: false
+  },
+  image: {
+    type: String,
+    default:
+      "https://res.cloudinary.com/jesskcloud/image/upload/v1586074585/defaultUser_pemjci.png"
+  },
+  intro: {
+    type: String
   }
 });

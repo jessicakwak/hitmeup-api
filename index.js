@@ -15,9 +15,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Routes
-// app.use("/channels", require("./controllers/channels"));
-// app.use("/users", require("./controllers/users"));
-// app.use("/messages", require("./controllers/messages"));
+app.use("/channels", require("./controllers/channels"));
+app.use("/users", require("./controllers/users"));
+app.use("/messages", require("./controllers/messages"));
 
 // Server
 app.listen(process.env.PORT, err => {
