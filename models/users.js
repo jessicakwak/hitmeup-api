@@ -13,8 +13,7 @@ module.exports = mongoose.model("users", {
   },
   password: {
     type: String,
-    required: true,
-    select: false
+    required: true
   },
   image: {
     type: String,
@@ -22,6 +21,7 @@ module.exports = mongoose.model("users", {
       "https://res.cloudinary.com/jesskcloud/image/upload/v1586074585/defaultUser_pemjci.png"
   },
   intro: {
-    type: String
+    type: String,
+    default: ""
   }
 });

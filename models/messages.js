@@ -15,8 +15,7 @@ module.exports = mongoose.model("messages", {
     required: true
   },
   date: {
-    type: Date,
-    default: Date.now
+    type: Date
   },
   location: {
     type: String,

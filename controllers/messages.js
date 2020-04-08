@@ -28,7 +28,7 @@ router.get("/", (req, res) => {
   try {
     jwt.verify(req.headers.authorization.split(" ")[1], process.env.SECRET);
     Messages.find({ channel: req.query.channel })
-      .populate({ path: "user", select: "_id name email" })
+      .populate({ path: "user", select: "_id name email image intro" })
       .then(data => res.send(data));
   } catch (err) {
     res.send("This is not a valid token");
