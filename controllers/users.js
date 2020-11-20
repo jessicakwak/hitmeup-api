@@ -15,6 +15,26 @@ cloudinary.config({
   api_secret: process.env.cloudinary_SECRET
 });
 
+const createUser = (data, res)=>{
+   //if there is no email, first hash the input password
+   data.password = bcrypt.hashSync(data.password, 10);
+   //After then, create a user based on input info
+   Users.create(data)
+     .then(response => {
+       //issue a token for the user
+       let token = jwt.sign(response.toObject(), process.env.SECRET);
+       res.send({
+         //send back created data minus password
+         token: token,
+         name: response.name,
+         email: response.email,
+         image: response.image,
+         intro: response.intro
+       });
+     })
+     .catch(err => res.send(err));
+}
+
 // Routes
 //user sign up
 router.post("/signup", upload.single("image"), (req, res) => {
@@ -33,40 +53,10 @@ router.post("/signup", upload.single("image"), (req, res) => {
           ).content;
           cloudinary.uploader.upload(uri).then(cloudinaryFile => {
             req.body.image = cloudinaryFile.url;
-            req.body.password = bcrypt.hashSync(req.body.password, 10);
-            Users.create(req.body)
-              .then(response => {
-                //issue a token for the user
-                let token = jwt.sign(response.toObject(), process.env.SECRET);
-                res.send({
-                  //send back created data minus password
-                  token: token,
-                  name: response.name,
-                  email: response.email,
-                  image: response.image,
-                  intro: response.intro
-                });
-              })
-              .catch(err => res.send(err));
+            createUser(req.body, res);
           });
         } else {
-          //if there is no email, first hash the input password
-          req.body.password = bcrypt.hashSync(req.body.password, 10);
-          //After then, create a user based on input info
-          Users.create(req.body)
-            .then(response => {
-              //issue a token for the user
-              let token = jwt.sign(response.toObject(), process.env.SECRET);
-              res.send({
-                //send back created data minus password
-                token: token,
-                name: response.name,
-                email: response.email,
-                image: response.image,
-                intro: response.intro
-              });
-            })
-            .catch(err => res.send(err));
+          createUser(req.body, res)
         }
       }
     })
@@ -99,9 +89,18 @@ router.post("/login", (req, res) => {
 
 //get user info by object ID
 router.get("/", (req, res) => {
-  Users.findById(req.query.id)
+  if(req.query.id){
+    Users.findById(req.query.id)
+    .select("-password")
     .then(data => res.send(data))
     .catch(err => res.send(err));
+  }else{
+    Users.find()
+    .select("-password")
+    .then(data=>res.send(data))
+    .catch(err=>res.send(err))
+  }
+  
 });
 
 // Export
