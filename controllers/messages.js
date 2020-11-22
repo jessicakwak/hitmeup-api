@@ -36,5 +36,19 @@ router.get("/", (req, res) => {
   }
 });
 
+//Delete
+router.delete("/:id", (req, res) => {
+  try{
+    jwt.verify(req.headers.authorization.split(" ")[1], process.env.SECRET);
+    Messages.findByIdAndDelete(req.params.id)
+    .then(data => res.send(data))
+    .catch(err => res.send(err));
+  }catch(err){
+    res.send("This is not a valid token");
+    console.log(err);
+  }
+
+});
+
 // Export
 module.exports = router;
