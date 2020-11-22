@@ -41,6 +41,7 @@ router.delete("/:id", (req, res) => {
   try{
     jwt.verify(req.headers.authorization.split(" ")[1], process.env.SECRET);
     Messages.findByIdAndDelete(req.params.id)
+    .populate({ path: "user", select: "_id name email" })
     .then(data => res.send(data))
     .catch(err => res.send(err));
   }catch(err){
